@@ -1,7 +1,9 @@
 import React, { useRef, useState } from 'react'
-import { Card, Form, Button, Alert } from "react-bootstrap"
+import { Typography, Alert, Card, Box, TextField, Button } from '@mui/material'
 import { useAuth } from "../contexts/AuthContext"
 import { Link, useNavigate } from "react-router-dom"
+import { styled } from '@mui/material/styles';
+import { CardContent } from '@mui/material';
 
 export default function Signup() {
   const emailRef = useRef()
@@ -30,30 +32,26 @@ export default function Signup() {
     setLoading(false)
   }
 
+  const CustomTextField = styled(TextField)({
+    width: "100%",
+    marginBottom: 10
+  })
+
   return (
     <React.Fragment>
       <Card>
-        <Card.Body>
-          <h2 className="text-center mb-4">Sign Up</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleSubmit}>
-          <Form.Group id="email">
-            <Form.Label>Email</Form.Label>
-            <Form.Control type="email" required ref={emailRef} />
-          </Form.Group>
-          <Form.Group id="password">
-            <Form.Label>Password</Form.Label>
-            <Form.Control type="password" required ref={passwordRef} />
-          </Form.Group>
-          <Form.Group id="password-confirm">
-            <Form.Label>Password Confirmation</Form.Label>
-            <Form.Control type="password" required ref={passwordConfirmRef} />
-          </Form.Group>
-          <Button disabled={loading} type="submit" className="w-100">Sign Up</Button>
-          </Form>
-        </Card.Body>
+        <CardContent>
+          <Typography variant="h2" sx={{textAlign: "center"}}>Sign Up</Typography>
+          {error && <Alert severity="error">{error}</Alert>}
+          <Box component="form" onSubmit={handleSubmit}>
+            <CustomTextField id="email" label="Email" type="email" required ref={emailRef} />
+            <CustomTextField id="password" label="Password" type="password" required ref={passwordRef} />
+            <CustomTextField id="password=confirm" label="Confirm Password" type="password" required ref={passwordConfirmRef} />
+            <Button variant="contained" disabled={loading} type="submit" sx={{width: "100%"}}>Sign Up</Button>
+          </Box>
+        </CardContent>
       </Card>
-      <div className="w-100 text-center mt-2">Already have an account? <Link to="/login">Log in</Link></div>
+      <div>Already have an account? <Link to="/login">Log in</Link></div>
     </React.Fragment>
   )
 }
