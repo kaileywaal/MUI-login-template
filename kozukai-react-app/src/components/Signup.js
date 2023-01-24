@@ -32,8 +32,6 @@ export default function Signup() {
     setLoading(false);
   }
 
-  const CustomTextField = styled(TextField)({});
-
   const handleEmailChange = (event) => {
     event.preventDefault();
     setEmail(event.target.value);
@@ -53,9 +51,7 @@ export default function Signup() {
     <React.Fragment>
       <Card>
         <CardContent>
-          <Typography variant="h2" sx={{ textAlign: "center" }}>
-            Sign Up
-          </Typography>
+          <Typography variant="h1">Sign Up</Typography>
           {error && (
             <Alert severity="error" sx={{ marginBottom: "10px" }}>
               {error}

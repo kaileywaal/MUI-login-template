@@ -1,68 +1,111 @@
-import React, { useRef, useState } from 'react'
-import { Card, Form, Button, Alert } from "react-bootstrap"
-import { useAuth } from "../contexts/AuthContext"
-import { Link, useNavigate } from "react-router-dom"
+import React, { useRef, useState } from "react";
+import {
+  Typography,
+  Alert,
+  Card,
+  Box,
+  TextField,
+  Button,
+  CardContent,
+} from "@mui/material";
+import { useAuth } from "../contexts/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function UpdateProfile() {
-  const emailRef = useRef()
-  const passwordRef = useRef()
-  const passwordConfirmRef = useRef()
-  const { currentUser, updatePassword, updateEmail } = useAuth()
-  const [ error, setError ] = useState("")
-  const [ loading, setLoading ] = useState(false)
-  const navigation = useNavigate()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const { currentUser, updatePassword, updateEmail } = useAuth();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigation = useNavigate();
+
+  const handleEmailChange = (event) => {
+    event.preventDefault();
+    setEmail(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    event.preventDefault();
+    setPassword(event.target.value);
+  };
+
+  const handlePasswordConfirmChange = (event) => {
+    event.preventDefault();
+    setPasswordConfirm(event.target.value);
+  };
 
   async function handleSubmit(e) {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-      return setError("Passwords do not match")
+    if (password !== passwordConfirm) {
+      return setError("Passwords do not match");
     }
 
-    const promises = []
-    setError("")
-    setLoading(true)
+    const promises = [];
+    setError("");
+    setLoading(true);
 
-    if(emailRef.current.value != currentUser.email) {
-        promises.push(updateEmail(emailRef.current.value))
+    if (email != currentUser.email) {
+      promises.push(updateEmail(email));
     }
-    if(passwordRef.current.value) {
-        promises.push(updatePassword(passwordRef.current.value))
+    if (password) {
+      promises.push(updatePassword(password));
     }
 
-    Promise.all(promises).then(() => {
-        navigation('/')
-    }).catch(() => {
-        setError('Failed to update account')
-    }).finally(() => {
-        setLoading(false)
-    })
+    Promise.all(promises)
+      .then(() => {
+        navigation("/");
+      })
+      .catch(() => {
+        setError("Failed to update account");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
 
   return (
     <React.Fragment>
       <Card>
-        <Card.Body>
+        <CardContent>
           <h2 className="text-center mb-4">Update Profile</h2>
           {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleSubmit}>
-          <Form.Group id="email">
-            <Form.Label>Email</Form.Label>
-            <Form.Control type="email" ref={emailRef} defaultValue={currentUser.email}/>
-          </Form.Group>
-          <Form.Group id="password">
-            <Form.Label>Password</Form.Label>
-            <Form.Control type="password" ref={passwordRef} placeholder="Leave blank to keep the same"/>
-          </Form.Group>
-          <Form.Group id="password-confirm">
-            <Form.Label>Password Confirmation</Form.Label>
-            <Form.Control type="password" ref={passwordConfirmRef} placeholder="Leave blank to keep the same"/>
-          </Form.Group>
-          <Button disabled={loading} type="submit" className="w-100">Save Updates</Button>
-          </Form>
-        </Card.Body>
+          <Box component="form" onSubmit={handleSubmit}>
+            <TextField
+              id="email"
+              label="Email"
+              type="email"
+              value={email}
+              placeholder={currentUser.email}
+              onChange={handleEmailChange}
+              sx={{ width: "100%", marginBottom: "10px" }}
+            />
+            <TextField
+              id="password"
+              label="Password"
+              type="password"
+              value={password}
+              onChange={handlePasswordChange}
+              sx={{ width: "100%", marginBottom: "10px" }}
+              placeholder="Leave blank to keep the same"
+            />
+            <TextField
+              id="password-confirm"
+              label="Confirm Password"
+              type="password"
+              value={passwordConfirm}
+              onChange={handlePasswordConfirmChange}
+              sx={{ width: "100%", marginBottom: "10px" }}
+              placeholder="Leave blank to keep the same"
+            />
+            <Button disabled={loading} type="submit" variant="contained">
+              Save Updates
+            </Button>
+          </Box>
+        </CardContent>
       </Card>
-      <div className="w-100 text-center mt-2"> <Link to="/">Cancel</Link></div>
+      <Link to="/">Cancel</Link>
     </React.Fragment>
-  )
+  );
 }

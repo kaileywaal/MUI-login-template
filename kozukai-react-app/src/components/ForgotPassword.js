@@ -1,49 +1,76 @@
-import React, { useRef, useState } from 'react'
-import { Card, Form, Button, Alert } from "react-bootstrap"
-import { useAuth } from "../contexts/AuthContext"
-import { Link } from 'react-router-dom'
+import React, { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { Link } from "react-router-dom";
+import {
+  Card,
+  Box,
+  TextField,
+  Button,
+  Alert,
+  CardContent,
+  Typography,
+} from "@mui/material";
 
 export default function ForgotPassword() {
-  const emailRef = useRef()
-  const { resetPassword } = useAuth()
-  const [ error, setError ] = useState("")
-  const [ loading, setLoading ] = useState(false)
-  const [ message, setMessage ] = useState("")
+  const [email, setEmail] = useState("");
+  const { resetPassword } = useAuth();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleEmailChange = (event) => {
+    event.preventDefault();
+    setEmail(event.target.value);
+  };
 
   async function handleSubmit(e) {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
-      setError("")
-      setMessage("")
-      setLoading(true)
-      await resetPassword(emailRef.current.value)
-      setMessage("Check your inbox for further instructions")
+      setError("");
+      setMessage("");
+      setLoading(true);
+      await resetPassword(email);
+      setMessage("Check your inbox for further instructions");
     } catch {
-      setError('Failed to reset password')
+      setError("Failed to reset password");
     }
 
-    setLoading(false)
+    setLoading(false);
   }
 
   return (
     <React.Fragment>
       <Card>
-        <Card.Body>
-          <h2 className="text-center mb-4">Password Reset</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
-          {message && <Alert variant="success">{message}</Alert>}
-          <Form onSubmit={handleSubmit}>
-          <Form.Group id="email">
-            <Form.Label>Email</Form.Label>
-            <Form.Control type="email" required ref={emailRef} />
-          </Form.Group>
-          <Button disabled={loading} type="submit" className="w-100">Reset Password</Button>
-          </Form>
-        </Card.Body>
+        <CardContent>
+          <Typography variant="h1">Password Reset</Typography>
+          {error && (
+            <Alert severity="danger" sx={{ mb: "10px" }}>
+              {error}
+            </Alert>
+          )}
+          {message && (
+            <Alert severity="success" sx={{ mb: "10px" }}>
+              {message}
+            </Alert>
+          )}
+          <Box component="form" onSubmit={handleSubmit}>
+            <TextField
+              id="email"
+              label="Email"
+              type="email"
+              required
+              value={email}
+              onChange={handleEmailChange}
+              sx={{ width: "100%", marginBottom: "10px" }}
+            />
+            <Button disabled={loading} type="submit" variant="contained">
+              Reset Password
+            </Button>
+          </Box>
+        </CardContent>
       </Card>
-      <div className="w-100 text-center mt-2"><Link to="/login">Log In</Link></div>
+      <Link to="/login">Log In</Link>
     </React.Fragment>
-  )
+  );
 }
-

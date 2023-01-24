@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Card, Button, Alert, Box, CardContent } from "@mui/material";
+import {
+  Card,
+  Button,
+  Alert,
+  Box,
+  CardContent,
+  Typography,
+} from "@mui/material";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -22,10 +29,10 @@ export default function Dashboard() {
     <>
       <Card>
         <CardContent>
-          <h2 className="text-center mb-4">Profile</h2>
+          <Typography variant="h1">Profile</Typography>
           {error && <Alert variant="danger">{error}</Alert>}
-          <strong>Email: </strong>
-          {currentUser.email}
+          <Typography variant="caption">Email: </Typography>
+          <Typography variant="body1">{currentUser.email}</Typography>
           <Link to="/update-profile" className="btn btn-primary w-100 mt-3">
             Update Profile
           </Link>
